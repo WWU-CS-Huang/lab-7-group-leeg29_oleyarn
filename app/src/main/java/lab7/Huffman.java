@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import heap.Heap;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Hashtable;
+import java.util.PriorityQueue;
 
 public class Huffman {
 
@@ -43,6 +48,36 @@ public class Huffman {
                     table.put(line.charAt(i), e);
                 }
             }
+
+
+
+        
+        }
+    }
+
+    public void buildTree(HashMap<K,V> map) { //table is a placeholder
+        PriorityQueue q = new PriorityQueue<>();
+        for (Object object : q) {
+            
+        }
+
+
+        
+    }
+
+    //node starts as 0
+    public String decode(String bitstring, int node, Heap heap) {
+        if (bitstring.length() < 0) {
+            return "";
+        }
+        if (heap.get(node*2+2) == null && heap.get(node*2+2) == null) {
+                    //should be a character                //restarts at root
+                return heap.get(node) + decode(bitstring.substring(1, bitstring.length()), 0, heap);
+            }
+        if (bitstring.charAt(0) == '1') {
+            return "" + decode(bitstring.substring(1, bitstring.length()), node*2+2, heap);
+        } else {
+            return "" + decode(bitstring.substring(1, bitstring.length(), node*2+1), heap);
         }
     }
 }
