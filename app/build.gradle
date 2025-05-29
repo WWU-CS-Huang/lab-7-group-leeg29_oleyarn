@@ -34,5 +34,5 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'lab7.Components'
+    mainClass = 'lab7.Huffman'
 }
