@@ -31,7 +31,12 @@ public class Huffman {
 
         Node tree = buildTree(table);
 
-        System.out.println(tree.right.right.letter);
+        Map<Character, String> encodeMap = new HashMap<>();
+        makeEncodeMap(tree, encodeMap);
+        System.out.println(encodeMap.entrySet().toString());
+
+        System.out.println(encode(encodeMap, "feed"));
+        
     }
 
     public static void countFrequencies(Scanner sc, Map<Character, Integer> table){
@@ -41,10 +46,8 @@ public class Huffman {
             for(int i = 0; i < line.length(); i++){
                 if(!table.containsKey(line.charAt(i))){
                     table.put(line.charAt(i), 1);
-                    System.out.println(line.charAt(i) + "" + table.get((Character)line.charAt(i)));
                 }
                 else{
-                    System.out.println(table.get(line.charAt(i)));
                     int e = (int)(table.get(line.charAt(i))) + 1;
                     table.put(line.charAt(i), e);
                 }
@@ -95,4 +98,42 @@ public class Huffman {
         return q.poll();
     }
 
+    public static void makeEncodeMap(Node root, Map<Character,String> map){
+        if(root == null){
+            return;
+        }
+        else if (root.letter == null) {
+            
+            makeEncodeMap(root.right, map, "1");
+            makeEncodeMap(root, map, "0");
+        }
+        else{
+            map.put(root.letter, "");
+        }
+    }
+
+    public static void makeEncodeMap(Node root, Map<Character,String> map, String path){
+        
+        if(root == null){
+            return;
+        }
+        else if (root.letter == null) {
+            System.out.println(path);
+            makeEncodeMap(root.right, map, path + "1");
+            makeEncodeMap(root.left, map, path + "0");
+        }
+        else{
+            map.put(root.letter, path);
+        }
+    }
+
+    public static String encode(Map<Character,String> map, String plain){
+        String cypher = "";
+
+        for(int i = 0; i < plain.length(); i++){
+            cypher += map.get(plain.charAt(i));
+        }
+
+        return cypher;
+    }
 }
