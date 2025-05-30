@@ -40,8 +40,10 @@ public class Huffman {
             System.out.println("Input string: " + input);
             System.out.println("Encoded String: " + encoded);
             System.out.println("Decoded string: " + decoded);
-            System.out.println("Decoded equals input : " + encoded.equals(decoded));
         }
+        System.out.println("Decoded equals input: " + input.equals(decoded));
+        float compressionVal = (float)encoded.length() / (float)input.length() / 8.0f;
+        System.out.println(compressionVal);
     }
 
     //counts the frequencies of characters and builds the input string that could be printed in main
@@ -75,7 +77,7 @@ public class Huffman {
             Node right = q.poll();
             Node tip = new Node(left.frequency + right.frequency, right.letterCount+left.letterCount);
             if(left.compareTo(right) == 0){
-                if(left.letter != null || right.letter != null){
+                if(left.letter == null || right.letter == null){
                     if(left.letterCount <= right.letterCount){
                         tip.setLeft(left);
                         tip.setRight(right);
