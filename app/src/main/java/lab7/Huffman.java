@@ -5,20 +5,17 @@ package lab7;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import heap.Heap;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Hashtable;
-import java.util.PriorityQueue;
 
 public class Huffman {
 
     public static void main(String[] args) throws FileNotFoundException{
         Heap heap = new Heap();
-        HashMap<Character, Integer> table = new HashMap<Character, Integer>();
+        Map<Character, Integer> table = new HashMap<>();
         File file = new File(args[0]);
         if(file == null){
             throw new FileNotFoundException();
@@ -31,9 +28,13 @@ public class Huffman {
         }
 
         countFrequencies(sc, table);
+
+        Node tree = buildTree(table);
+
+        System.out.println(tree.right.right.letter);
     }
 
-    public static void countFrequencies(Scanner sc, HashMap table){
+    public static void countFrequencies(Scanner sc, Map<Character, Integer> table){
         String line;
         while(sc.hasNextLine()){
             line = sc.nextLine();
@@ -49,35 +50,49 @@ public class Huffman {
                 }
             }
 
-
-
-        
         }
     }
 
-    public void buildTree(HashMap<K,V> map) { //table is a placeholder
-        PriorityQueue q = new PriorityQueue<>();
-        for (Object object : q) {
-            
+    public static Node buildTree(Map<Character,Integer> map) { //table is a placeholder
+        PriorityQueue<Node> q = new PriorityQueue<>();
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            q.add(new Node(entry.getValue(), entry.getKey()));
         }
 
-
-        
-    }
-
-    //node starts as 0
-    public String decode(String bitstring, int node, Heap heap) {
-        if (bitstring.length() < 0) {
-            return "";
-        }
-        if (heap.get(node*2+2) == null && heap.get(node*2+2) == null) {
-                    //should be a character                //restarts at root
-                return heap.get(node) + decode(bitstring.substring(1, bitstring.length()), 0, heap);
+        while(q.size() != 1){
+            Node left = q.poll();
+            Node right = q.poll();
+            Node tip = new Node(left.frequency + right.frequency, right.letterCount+left.letterCount);
+            if(left.compareTo(right) == 0){
+                if(left.letter != null || right.letter != null){
+                    if(left.letterCount <= right.letterCount){
+                        tip.setLeft(left);
+                        tip.setRight(right);
+                    }else{
+                        tip.setLeft(right);
+                        tip.setRight(left);
+                    }
+                }
+                else if(left.letter.compareTo(right.letter) < 0){
+                    tip.setLeft(left);
+                    tip.setRight(right);
+                }
+                else{
+                    tip.setLeft(right);
+                    tip.setRight(left);
+                }
             }
-        if (bitstring.charAt(0) == '1') {
-            return "" + decode(bitstring.substring(1, bitstring.length()), node*2+2, heap);
-        } else {
-            return "" + decode(bitstring.substring(1, bitstring.length(), node*2+1), heap);
+            else if(left.compareTo(right) == 1){
+                tip.setLeft(right);
+                tip.setRight(left);
+            }
+            else{
+                tip.setLeft(left);
+                tip.setRight(right);
+            }
+            q.add(tip);
         }
+        return q.poll();
     }
+
 }
