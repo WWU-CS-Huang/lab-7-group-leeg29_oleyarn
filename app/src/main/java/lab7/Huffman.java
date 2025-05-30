@@ -27,20 +27,25 @@ public class Huffman {
             System.out.println("File not Found");
         }
 
-        countFrequencies(sc, table);
+        String input = countFrequencies(sc, table);
 
         Node tree = buildTree(table);
 
         Map<Character, String> encodeMap = new HashMap<>();
         makeEncodeMap(tree, encodeMap);
-        System.out.println(encodeMap.entrySet().toString());
 
-        System.out.println(encode(encodeMap, "feed"));
-        
+        String encoded = encode(tree, input);
+        if(input.length() < 100){
+            System.out.println("Input string: " + input);
+            System.out.println("Encoded String: " + encoded);
+            System.out.println("Decoded string: ");
+        }
     }
 
-    public static void countFrequencies(Scanner sc, Map<Character, Integer> table){
+    //counts the frequencies of characters and builds the input string that could be printed in main
+    public static String countFrequencies(Scanner sc, Map<Character, Integer> table){
         String line;
+        String total = "";
         while(sc.hasNextLine()){
             line = sc.nextLine();
             for(int i = 0; i < line.length(); i++){
@@ -52,8 +57,9 @@ public class Huffman {
                     table.put(line.charAt(i), e);
                 }
             }
-
+            total += line;
         }
+        return total;
     }
 
     public static Node buildTree(Map<Character,Integer> map) { //table is a placeholder
@@ -99,13 +105,14 @@ public class Huffman {
     }
 
     public static void makeEncodeMap(Node root, Map<Character,String> map){
-        if(root == null){
+        if(root == null || !map.isEmpty()){
+            System.out.println("hit");
             return;
         }
         else if (root.letter == null) {
             
             makeEncodeMap(root.right, map, "1");
-            makeEncodeMap(root, map, "0");
+            makeEncodeMap(root.left, map, "0");
         }
         else{
             map.put(root.letter, "");
@@ -118,7 +125,6 @@ public class Huffman {
             return;
         }
         else if (root.letter == null) {
-            System.out.println(path);
             makeEncodeMap(root.right, map, path + "1");
             makeEncodeMap(root.left, map, path + "0");
         }
@@ -127,7 +133,9 @@ public class Huffman {
         }
     }
 
-    public static String encode(Map<Character,String> map, String plain){
+    public static String encode(Node tree, String plain){
+        Map<Character,String> map = new HashMap<>();
+        makeEncodeMap(tree, map);
         String cypher = "";
 
         for(int i = 0; i < plain.length(); i++){
