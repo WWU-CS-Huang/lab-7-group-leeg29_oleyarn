@@ -35,10 +35,12 @@ public class Huffman {
         makeEncodeMap(tree, encodeMap);
 
         String encoded = encode(tree, input);
+        String decoded = decode(encoded, tree);
         if(input.length() < 100){
             System.out.println("Input string: " + input);
             System.out.println("Encoded String: " + encoded);
-            System.out.println("Decoded string: ");
+            System.out.println("Decoded string: " + decoded);
+            System.out.println("Decoded equals input : " + encoded.equals(decoded));
         }
     }
 
@@ -144,4 +146,33 @@ public class Huffman {
 
         return cypher;
     }
+    public static String decode(String input, Node tree) {
+        String secret = "";
+
+        int place = 0;
+        while (input.length() > 0) {
+            String temp = decoder(input, tree, place);
+            secret += temp.charAt(0);
+            input = input.substring(Integer.parseInt(temp.substring(1)));
+            place = 0;
+        }
+        
+        return secret;
+    }
+
+    private static String decoder(String input, Node tree, int place) {
+        if (tree.left == null && tree.right == null) {
+            String placeString = place + "";
+            return tree.letter + placeString;
+        }
+        Character number = input.charAt(0);
+        if (number == '1') {
+            return decoder(input.substring(1), tree.right, ++place);   
+        } else {
+            return decoder(input.substring(1), tree.left, ++place);
+        }
+    }
+
 }
+
+
